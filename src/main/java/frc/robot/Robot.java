@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 //Camera Related Imports
@@ -26,7 +28,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 public class Robot extends TimedRobot {
   DifferentialDrive myDrive;
 
-  CANSparkMax leftDrive, rightDrive;
+  CANSparkMax frontLeft, backLeft, frontRight, backRight;
 
   XboxController Controller;
 
@@ -54,8 +56,14 @@ public class Robot extends TimedRobot {
     Camera2.setBrightness(30);
 
     //Drive System
-    leftDrive = new CANSparkMax(0, MotorType.kBrushless);
-    rightDrive = new CANSparkMax(1, MotorType.kBrushless);
+    frontLeft = new CANSparkMax(0, MotorType.kBrushless);
+    backLeft = new CANSparkMax(1, MotorType.kBrushless);
+    frontRight = new CANSparkMax(2, MotorType.kBrushless);
+    backRight = new CANSparkMax(3, MotorType.kBrushless);
+
+    SpeedControllerGroup leftDrive = new SpeedControllerGroup(frontLeft, backLeft);
+    SpeedControllerGroup rightDrive = new SpeedControllerGroup(frontRight, backRight);
+    
     rightDrive.setInverted(true);
     myDrive = new DifferentialDrive(leftDrive, rightDrive);
 

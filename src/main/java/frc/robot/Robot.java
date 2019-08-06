@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -28,6 +30,11 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 public class Robot extends TimedRobot {
   DifferentialDrive myDrive;
 
+  boolean rTriggerPressed;
+  boolean lTriggerPressed;
+  boolean leftBumperPressed;
+  boolean rightBumperPressed;
+
   CANSparkMax frontLeft, backLeft, frontRight, backRight;
 
   XboxController Controller;
@@ -39,7 +46,12 @@ public class Robot extends TimedRobot {
   PowerDistributionPanel powerPanel;
 
   private Compressor C;
-  private DoubleSolenoid frontLifter, backLifter, hatchGrabber;
+  private DoubleSolenoid frontLifter, backLifter, hatchGrabber, grabberPush;
+
+  private static final String kDefaultAuto = "Default";
+  private static final String kCustomAuto = "My Auto";
+  private String m_autoSelected;
+  private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   public void robotInit() {
 
@@ -56,7 +68,7 @@ public class Robot extends TimedRobot {
     Camera2.setBrightness(30);
 
     //Drive System
-    frontLeft = new CANSparkMax(0, MotorType.kBrushless);
+    frontLeft = new CANSparkMax(4, MotorType.kBrushless);
     backLeft = new CANSparkMax(1, MotorType.kBrushless);
     frontRight = new CANSparkMax(2, MotorType.kBrushless);
     backRight = new CANSparkMax(3, MotorType.kBrushless);
@@ -64,15 +76,34 @@ public class Robot extends TimedRobot {
     SpeedControllerGroup leftDrive = new SpeedControllerGroup(frontLeft, backLeft);
     SpeedControllerGroup rightDrive = new SpeedControllerGroup(frontRight, backRight);
     
-    rightDrive.setInverted(true);
     myDrive = new DifferentialDrive(leftDrive, rightDrive);
 
     //Xbox Controller
     Controller = new XboxController(0);
+
+    //Pnuematics
+    frontLifter = new DoubleSolenoid(1, 2);
+    backLifter = new DoubleSolenoid(3, 4);
+    hatchGrabber = new DoubleSolenoid(7, 8);
+
+    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
+    m_chooser.addOption("My Auto", kCustomAuto);
+    SmartDashboard.putData("Auto choices", m_chooser);
     
   }
+  public void autonomousInit() {
+    m_autoSelected = m_chooser.getSelected();
+    System.out.println("Auto selected: " + m_autoSelected);
+    C.start();
+  }
+
+  public void autonomousPeriodic() {
+    teleop();
+    }
+
   public void teleopInit() {
     super.teleopInit();
+    C.start();
   }
 
   public void robotPeriodic() {
@@ -80,7 +111,86 @@ public class Robot extends TimedRobot {
 
   public void teleop() {
     myDrive.arcadeDrive(Controller.getRawAxis(1)*-1, Controller.getRawAxis(0));
-  }
+
+
+    //This pulls controller axis value
+    if(Controller.getRawAxis(3) > 0.1){
+      //Determines if this line of code is not true
+      if(rTriggerPressed != true){
+        //in the case that the past line of code was not true then set true
+        rTriggerPressed = true;
+        //If the value was pulled forward then set the Grabber to reverse and vice versa
+        if(hatchGrabber.get() == Value.kForward){
+            hatchGrabber.set(Value.kReverse);
+        }
+        else {
+          hatchGrabber.set(Value.kForward);
+        }
+      }
+      //Everything is determined false if the previous things were alread false
+    } else{
+      rTriggerPressed = false;
+    }
+
+        //This pulls controller axis value
+        if(Controller.getBumper(Hand.kLeft)){
+          //Determines if this line of code is not true
+          if(leftBumperPressed != true){
+            //in the case that the past line of code was not true then set true
+            leftBumperPressed = true;
+            //If the value was pulled forward then set the Grabber to reverse and vice versa
+            if(frontLifter.get() == Value.kForward){
+                frontLifter.set(Value.kReverse);
+            }
+            else {
+              frontLifter.set(Value.kForward);
+            }
+          }
+          //Everything is determined false if the previous things were alread false
+        } else{
+          leftBumperPressed = false;
+        }
+
+        //This pulls controller axis value
+        if(Controller.getBumper(Hand.kRight)){
+          //Determines if this line of code is not true
+          if(rightBumperPressed != true){
+            //in the case that the past line of code was not true then set true
+            rightBumperPressed = true;
+            //If the value was pulled forward then set the Grabber to reverse and vice versa
+            if(backLifter.get() == Value.kForward){
+                backLifter.set(Value.kReverse);
+            }
+            else {
+              backLifter.set(Value.kForward);
+            }
+          }
+          //Everything is determined false if the previous things were alread false
+        } else{
+          rightBumperPressed = false;
+        }
+
+    //This pulls controller axis value
+    if(Controller.getRawAxis(2) > 0.1){
+      //Determines if this line of code is not true
+      if(lTriggerPressed != true){
+        //in the case that the past line of code was not true then set true
+        lTriggerPressed = true;
+        //If the value was pulled forward then set the Grabber to reverse and vice versa
+        if(grabberPush.get() == Value.kForward){
+            grabberPush.set(Value.kReverse);
+        }
+        else {
+          grabberPush.set(Value.kForward);
+        }
+      }
+      //Everything is determined false if the previous things were alread false
+    } else{
+      lTriggerPressed = false;
+    }
+
+    }
+
 
   public void teleopPeriodic() {
     teleop();

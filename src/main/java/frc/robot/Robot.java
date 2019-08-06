@@ -82,9 +82,10 @@ public class Robot extends TimedRobot {
     Controller = new XboxController(0);
 
     //Pnuematics
-    frontLifter = new DoubleSolenoid(1, 2);
-    backLifter = new DoubleSolenoid(3, 4);
-    hatchGrabber = new DoubleSolenoid(7, 8);
+    frontLifter = new DoubleSolenoid(0, 1);
+    backLifter = new DoubleSolenoid(2, 3);
+    hatchGrabber = new DoubleSolenoid(4, 5);
+    grabberPush = new DoubleSolenoid(6, 7);
 
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);

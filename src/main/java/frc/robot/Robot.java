@@ -73,6 +73,11 @@ public class Robot extends TimedRobot {
     frontRight = new CANSparkMax(2, MotorType.kBrushless);
     backRight = new CANSparkMax(3, MotorType.kBrushless);
 
+    frontLeft.set(0.7);
+    backLeft.set(0.7);
+    frontRight.set(0.7);
+    backRight.set(0.7);
+
     SpeedControllerGroup leftDrive = new SpeedControllerGroup(frontLeft, backLeft);
     SpeedControllerGroup rightDrive = new SpeedControllerGroup(frontRight, backRight);
     
@@ -114,11 +119,6 @@ public class Robot extends TimedRobot {
 
   public void teleop() {
     myDrive.arcadeDrive(Controller.getRawAxis(1)*-1, Controller.getRawAxis(0));
-
-    frontLeft.set(0.7);
-    backLeft.set(0.7);
-    frontRight.set(0.7);
-    backRight.set(0.7);
 
     //This pulls controller axis value
     if(Controller.getRawAxis(3) > 0.1){

@@ -73,11 +73,6 @@ public class Robot extends TimedRobot {
     frontRight = new CANSparkMax(2, MotorType.kBrushless);
     backRight = new CANSparkMax(3, MotorType.kBrushless);
 
-    frontLeft.set(0.7);
-    backLeft.set(0.7);
-    frontRight.set(0.7);
-    backRight.set(0.7);
-
     SpeedControllerGroup leftDrive = new SpeedControllerGroup(frontLeft, backLeft);
     SpeedControllerGroup rightDrive = new SpeedControllerGroup(frontRight, backRight);
     
@@ -118,7 +113,7 @@ public class Robot extends TimedRobot {
   }
 
   public void teleop() {
-    myDrive.arcadeDrive(Controller.getRawAxis(1)*-1, Controller.getRawAxis(0));
+    myDrive.arcadeDrive(Controller.getRawAxis(1)*-0.9, Controller.getRawAxis(0)*0.9);
 
     //This pulls controller axis value
     if(Controller.getRawAxis(3) > 0.1){
@@ -127,11 +122,11 @@ public class Robot extends TimedRobot {
         //in the case that the past line of code was not true then set true
         rTriggerPressed = true;
         //If the value was pulled forward then set the Grabber to reverse and vice versa
-        if(hatchGrabber.get() == Value.kForward){
-            hatchGrabber.set(Value.kReverse);
+        if(frontLifter.get() == Value.kForward){
+            frontLifter.set(Value.kReverse);
         }
         else {
-          hatchGrabber.set(Value.kForward);
+          frontLifter.set(Value.kForward);
         }
       }
       //Everything is determined false if the previous things were alread false
@@ -146,11 +141,11 @@ public class Robot extends TimedRobot {
             //in the case that the past line of code was not true then set true
             leftBumperPressed = true;
             //If the value was pulled forward then set the Grabber to reverse and vice versa
-            if(frontLifter.get() == Value.kForward){
-                frontLifter.set(Value.kReverse);
+            if(grabberPush.get() == Value.kForward){
+                grabberPush.set(Value.kReverse);
             }
             else {
-              frontLifter.set(Value.kForward);
+              grabberPush.set(Value.kForward);
             }
           }
           //Everything is determined false if the previous things were alread false
@@ -159,7 +154,7 @@ public class Robot extends TimedRobot {
         }
 
         //This pulls controller axis value
-        if(Controller.getBumper(Hand.kRight)){
+        if(Controller.getRawAxis(2) > 0.1){
           //Determines if this line of code is not true
           if(rightBumperPressed != true){
             //in the case that the past line of code was not true then set true
@@ -178,17 +173,17 @@ public class Robot extends TimedRobot {
         }
 
     //This pulls controller axis value
-    if(Controller.getRawAxis(2) > 0.1){
+    if(Controller.getBumper(Hand.kRight)){
       //Determines if this line of code is not true
       if(lTriggerPressed != true){
         //in the case that the past line of code was not true then set true
         lTriggerPressed = true;
         //If the value was pulled forward then set the Grabber to reverse and vice versa
-        if(grabberPush.get() == Value.kForward){
-            grabberPush.set(Value.kReverse);
+        if(hatchGrabber.get() == Value.kForward){
+            hatchGrabber.set(Value.kReverse);
         }
         else {
-          grabberPush.set(Value.kForward);
+          hatchGrabber.set(Value.kForward);
         }
       }
       //Everything is determined false if the previous things were alread false

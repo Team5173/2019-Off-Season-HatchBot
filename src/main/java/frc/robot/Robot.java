@@ -29,10 +29,13 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Robot extends TimedRobot {
   DifferentialDrive myDrive;
-
+  //grabberPush
   boolean rTriggerPressed;
+  //Hatch Grabber
   boolean lTriggerPressed;
+
   boolean leftBumperPressed;
+
   boolean rightBumperPressed;
 
   CANSparkMax frontLeft, backLeft, frontRight, backRight;
@@ -98,6 +101,7 @@ public class Robot extends TimedRobot {
     m_autoSelected = m_chooser.getSelected();
     System.out.println("Auto selected: " + m_autoSelected);
     C.start();
+    grabberPush.set(Value.kReverse);
   }
 
   public void autonomousPeriodic() {
@@ -113,7 +117,7 @@ public class Robot extends TimedRobot {
   }
 
   public void teleop() {
-    myDrive.arcadeDrive(Controller.getRawAxis(1)*-0.9, Controller.getRawAxis(0)*0.9);
+    myDrive.arcadeDrive(Controller.getRawAxis(1)*-1, Controller.getRawAxis(0)*1);
 
     //This pulls controller axis value
     if(Controller.getRawAxis(3) > 0.1){
@@ -191,6 +195,10 @@ public class Robot extends TimedRobot {
       lTriggerPressed = false;
     }
 
+    SmartDashboard.putNumber("frontLeftRPM", frontLeft.getEncoder().getVelocity());
+    SmartDashboard.putNumber("frontRightRPM", frontRight.getEncoder().getVelocity());
+    SmartDashboard.putNumber("backLeftRPM", backLeft.getEncoder().getVelocity());
+    SmartDashboard.putNumber("backRightRPM", backRight.getEncoder().getVelocity());
     }
 
 

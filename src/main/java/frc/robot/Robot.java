@@ -120,7 +120,7 @@ public class Robot extends TimedRobot {
     myDrive.arcadeDrive(Controller.getRawAxis(1)*-1, Controller.getRawAxis(0)*1);
 
     //This pulls controller axis value
-    if(Controller.getRawAxis(3) > 0.1){
+    if(Controller.getRawButton(8)){
       //Determines if this line of code is not true
       if(rTriggerPressed != true){
         //in the case that the past line of code was not true then set true
@@ -158,7 +158,7 @@ public class Robot extends TimedRobot {
         }
 
         //This pulls controller axis value
-        if(Controller.getRawAxis(2) > 0.1){
+        if(Controller.getRawButton(7)){
           //Determines if this line of code is not true
           if(rightBumperPressed != true){
             //in the case that the past line of code was not true then set true
@@ -199,6 +199,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("frontRightRPM", frontRight.getEncoder().getVelocity());
     SmartDashboard.putNumber("backLeftRPM", backLeft.getEncoder().getVelocity());
     SmartDashboard.putNumber("backRightRPM", backRight.getEncoder().getVelocity());
+
+
+
     }
 
 

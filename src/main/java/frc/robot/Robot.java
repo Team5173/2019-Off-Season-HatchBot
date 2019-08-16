@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.RobotController;
 
 //Camera Related Imports
 import edu.wpi.cscore.VideoSource;
@@ -70,6 +71,8 @@ public class Robot extends TimedRobot {
     Camera2.setVideoMode(PixelFormat.kMJPEG, 320, 240, 8);
     Camera2.setBrightness(30);
 
+    powerPanel = new PowerDistributionPanel();
+
     //Drive System
     frontLeft = new CANSparkMax(4, MotorType.kBrushless);
     backLeft = new CANSparkMax(1, MotorType.kBrushless);
@@ -117,7 +120,7 @@ public class Robot extends TimedRobot {
   }
 
   public void teleop() {
-    myDrive.arcadeDrive(Controller.getRawAxis(1)*-1, Controller.getRawAxis(0)*1);
+    myDrive.arcadeDrive(Controller.getRawAxis(1)*-0.9, Controller.getRawAxis(0)*0.9);
 
     //This pulls controller axis value
     if(Controller.getRawButton(8)){
@@ -199,7 +202,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("frontRightRPM", frontRight.getEncoder().getVelocity());
     SmartDashboard.putNumber("backLeftRPM", backLeft.getEncoder().getVelocity());
     SmartDashboard.putNumber("backRightRPM", backRight.getEncoder().getVelocity());
-
+    SmartDashboard.putNumber("Roborio Voltage", RobotController.getBatteryVoltage());
+    SmartDashboard.putNumber("PDP Battery Voltage", powerPanel.getVoltage());
 
 
     }

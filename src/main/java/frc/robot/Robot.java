@@ -199,8 +199,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("frontRightRPM", frontRight.getEncoder().getVelocity());
     SmartDashboard.putNumber("backLeftRPM", backLeft.getEncoder().getVelocity());
     SmartDashboard.putNumber("backRightRPM", backRight.getEncoder().getVelocity());
-
-
+    SmartDashboard.putBoolean("hatchGrabberState", (hatchGrabber.get() == Value.kForward));
+    SmartDashboard.putBoolean("grabberPushState", (grabberPush.get() == Value.kForward));
 
     }
 

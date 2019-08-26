@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.RobotController;
 
 //Camera Related Imports
@@ -120,7 +121,7 @@ public class Robot extends TimedRobot {
   }
 
   public void teleop() {
-    myDrive.arcadeDrive(Controller.getRawAxis(1)*-0.9, Controller.getRawAxis(0)*0.9);
+    myDrive.arcadeDrive(Controller.getRawAxis(1)*-0.7, Controller.getRawAxis(0)*0.7);
 
     //This pulls controller axis value
     if(Controller.getRawButton(8)){
@@ -208,8 +209,6 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("Roborio Voltage", RobotController.getBatteryVoltage());
     SmartDashboard.putNumber("PDP Battery Voltage", powerPanel.getVoltage());
-
-
 
     }
 

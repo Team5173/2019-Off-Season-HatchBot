@@ -206,6 +206,8 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putBoolean("hatchGrabberState", (hatchGrabber.get() == Value.kForward));
     SmartDashboard.putBoolean("grabberPushState", (grabberPush.get() == Value.kForward));
+    SmartDashboard.putBoolean("Front Lift Plungers", frontLifter.get() == Value.kForward);
+    SmartDashboard.putBoolean("Back Lift Plungers", backLifter.get() == Value.kForward);
 
     SmartDashboard.putNumber("Roborio Voltage", RobotController.getBatteryVoltage());
     SmartDashboard.putNumber("PDP Battery Voltage", powerPanel.getVoltage());

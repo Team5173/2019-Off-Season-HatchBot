@@ -121,7 +121,7 @@ public class Robot extends TimedRobot {
   }
 
   public void teleop() {
-    myDrive.arcadeDrive(Controller.getRawAxis(1)*-0.7, Controller.getRawAxis(0)*0.7);
+    myDrive.arcadeDrive(Controller.getRawAxis(1)*-0.9, Controller.getRawAxis(0)*0.9);
 
     //This pulls controller axis value
     if(Controller.getRawButton(8)){

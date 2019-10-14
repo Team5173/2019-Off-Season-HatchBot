@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.AnalogInput;
 
 //Camera Related Imports
 import edu.wpi.cscore.VideoSource;
@@ -40,6 +42,8 @@ public class Robot extends TimedRobot {
 
   boolean rightBumperPressed;
 
+  Timer time;
+
   CANSparkMax frontLeft, backLeft, frontRight, backRight;
 
   XboxController Controller;
@@ -50,6 +54,8 @@ public class Robot extends TimedRobot {
 
   PowerDistributionPanel powerPanel;
 
+  private final AnalogInput pressureSensor;
+
   private Compressor C;
   private DoubleSolenoid frontLifter, backLifter, hatchGrabber, grabberPush;
 
@@ -57,6 +63,10 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+
+  public double getAirPressure(){
+    return 250 * pressureSensor.getVoltage() / 5-25;
+  }
 
   public void robotInit() {
 
@@ -80,6 +90,9 @@ public class Robot extends TimedRobot {
     frontRight = new CANSparkMax(2, MotorType.kBrushless);
     backRight = new CANSparkMax(3, MotorType.kBrushless);
 
+    //Timer
+    time = new Timer();
+
     SpeedControllerGroup leftDrive = new SpeedControllerGroup(frontLeft, backLeft);
     SpeedControllerGroup rightDrive = new SpeedControllerGroup(frontRight, backRight);
     
@@ -93,6 +106,7 @@ public class Robot extends TimedRobot {
     backLifter = new DoubleSolenoid(2, 3);
     hatchGrabber = new DoubleSolenoid(4, 5);
     grabberPush = new DoubleSolenoid(6, 7);
+    pressureSensor = new AnalogInput(0);
 
     C = new Compressor();
 
@@ -121,7 +135,7 @@ public class Robot extends TimedRobot {
   }
 
   public void teleop() {
-    myDrive.arcadeDrive(Controller.getRawAxis(1)*-0.9, Controller.getRawAxis(0)*0.9);
+    myDrive.arcadeDrive(Math.pow(Controller.getRawAxis(1)*-0.9, 3), Math.pow(Controller.getRawAxis(0)*.9, 3));
 
     //This pulls controller axis value
     if(Controller.getRawButton(8)){
@@ -149,12 +163,14 @@ public class Robot extends TimedRobot {
             //in the case that the past line of code was not true then set true
             leftBumperPressed = true;
             //If the value was pulled forward then set the Grabber to reverse and vice versa
-            if(grabberPush.get() == Value.kForward){
+            //if(hatchGrabber.get() == Value.kForward){
+                hatchGrabber.set(Value.kForward);
+                grabberPush.set(Value.kForward);
+                
+                time.delay(.1);
                 grabberPush.set(Value.kReverse);
-            }
-            else {
-              grabberPush.set(Value.kForward);
-            }
+            //}
+            
           }
           //Everything is determined false if the previous things were alread false
         } else{
@@ -210,6 +226,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Back Lift Plungers", backLifter.get() == Value.kForward);
 
     SmartDashboard.putNumber("Roborio Voltage", RobotController.getBatteryVoltage());
+    SmartDashboard.putNumber("PDP Battery Voltage", powerPanel.getVoltage());
+
     SmartDashboard.putNumber("PDP Battery Voltage", powerPanel.getVoltage());
 
     }

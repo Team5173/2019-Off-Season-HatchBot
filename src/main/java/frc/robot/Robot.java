@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.Spark;
 
 //Camera Related Imports
 import edu.wpi.cscore.VideoSource;
@@ -44,7 +45,9 @@ public class Robot extends TimedRobot {
 
   Timer time;
 
-  CANSparkMax frontLeft, backLeft, frontRight, backRight;
+  //CANSparkMax frontLeft, backLeft, frontRight, backRight;
+
+  Spark left, right;
 
   XboxController Controller;
 
@@ -54,7 +57,7 @@ public class Robot extends TimedRobot {
 
   PowerDistributionPanel powerPanel;
 
-  private final AnalogInput pressureSensor;
+  private AnalogInput pressureSensor;
 
   private Compressor C;
   private DoubleSolenoid frontLifter, backLifter, hatchGrabber, grabberPush;
@@ -65,7 +68,7 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   public double getAirPressure(){
-    return 250 * pressureSensor.getVoltage() / 5-25;
+    return 250 * pressureSensor.getVoltage() / RobotController.getVoltage5V()-25;
   }
 
   public void robotInit() {
@@ -85,18 +88,20 @@ public class Robot extends TimedRobot {
     powerPanel = new PowerDistributionPanel();
 
     //Drive System
-    frontLeft = new CANSparkMax(4, MotorType.kBrushless);
-    backLeft = new CANSparkMax(1, MotorType.kBrushless);
-    frontRight = new CANSparkMax(2, MotorType.kBrushless);
-    backRight = new CANSparkMax(3, MotorType.kBrushless);
+    //frontLeft = new CANSparkMax(4, MotorType.kBrushless);
+    //backLeft = new CANSparkMax(1, MotorType.kBrushless);
+    //frontRight = new CANSparkMax(2, MotorType.kBrushless);
+    //backRight = new CANSparkMax(3, MotorType.kBrushless);
+
+    
 
     //Timer
     time = new Timer();
 
-    SpeedControllerGroup leftDrive = new SpeedControllerGroup(frontLeft, backLeft);
-    SpeedControllerGroup rightDrive = new SpeedControllerGroup(frontRight, backRight);
+    //SpeedControllerGroup leftDrive = new SpeedControllerGroup(frontLeft, backLeft);
+    //SpeedControllerGroup rightDrive = new SpeedControllerGroup(frontRight, backRight);
     
-    myDrive = new DifferentialDrive(leftDrive, rightDrive);
+    myDrive = new DifferentialDrive(left, right);
 
     //Xbox Controller
     Controller = new XboxController(0);
@@ -135,7 +140,7 @@ public class Robot extends TimedRobot {
   }
 
   public void teleop() {
-    myDrive.arcadeDrive(Math.pow(Controller.getRawAxis(1)*-0.9, 3), Math.pow(Controller.getRawAxis(0)*.9, 3));
+    myDrive.arcadeDrive(Math.pow(Controller.getRawAxis(1)*-0.7, 3), Math.pow(Controller.getRawAxis(0)*.7, 3));
 
     //This pulls controller axis value
     if(Controller.getRawButton(8)){
@@ -215,10 +220,10 @@ public class Robot extends TimedRobot {
       lTriggerPressed = false;
     }
 
-    SmartDashboard.putNumber("frontLeftRPM", frontLeft.getEncoder().getVelocity());
-    SmartDashboard.putNumber("frontRightRPM", frontRight.getEncoder().getVelocity());
-    SmartDashboard.putNumber("backLeftRPM", backLeft.getEncoder().getVelocity());
-    SmartDashboard.putNumber("backRightRPM", backRight.getEncoder().getVelocity());
+    //SmartDashboard.putNumber("frontLeftRPM", frontLeft.getEncoder().getVelocity());
+    //SmartDashboard.putNumber("frontRightRPM", frontRight.getEncoder().getVelocity());
+    //SmartDashboard.putNumber("backLeftRPM", backLeft.getEncoder().getVelocity());
+    //SmartDashboard.putNumber("backRightRPM", backRight.getEncoder().getVelocity());
 
     SmartDashboard.putBoolean("hatchGrabberState", (hatchGrabber.get() == Value.kForward));
     SmartDashboard.putBoolean("grabberPushState", (grabberPush.get() == Value.kForward));
@@ -228,7 +233,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Roborio Voltage", RobotController.getBatteryVoltage());
     SmartDashboard.putNumber("PDP Battery Voltage", powerPanel.getVoltage());
 
-    SmartDashboard.putNumber("PDP Battery Voltage", powerPanel.getVoltage());
+    SmartDashboard.putNumber("Pressure Gage", getAirPressure());
 
     }
 
@@ -240,4 +245,3 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
   }
 }
-
